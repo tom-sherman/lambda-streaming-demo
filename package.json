@@ -1,0 +1,8 @@
+{
+  "name": "lambda-streaming-demo",
+  "private": true,
+  "author": "Tom Sherman",
+  "devDependencies": {
+    "prettier": "^2.8.3"
+  }
+}

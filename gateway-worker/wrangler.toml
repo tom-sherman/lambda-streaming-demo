@@ -1,0 +1,11 @@
+name = "cf-worker"
+main = "src/index.ts"
+compatibility_date = "2023-01-19"
+compatibility_flags = [ "streams_enable_constructors" ]
+[durable_objects]
+bindings = [
+  { name = "lambdas", class_name = "Lambda" },
+]
+[[migrations]]
+tag = "v1" # Should be unique for each entry
+new_classes = ["Lambda"]

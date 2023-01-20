@@ -1,0 +1,28 @@
+{
+  "name": "application-lambda",
+  "version": "0.1.0",
+  "bin": {
+    "application-lambda": "bin/application-lambda.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "jest",
+    "cdk": "cdk"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.109",
+    "@types/node": "18.11.18",
+    "@types/ws": "^8.5.4",
+    "aws-cdk": "2.61.0",
+    "esbuild": "^0.17.3",
+    "tsx": "^3.12.2",
+    "typescript": "~4.9.4"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "2.61.0",
+    "constructs": "^10.0.0",
+    "source-map-support": "^0.5.21",
+    "ws": "^8.12.0"
+  }
+}
