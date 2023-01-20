@@ -1,3 +1,5 @@
+![Screenshot of an excalidraw canvas https://app.excalidraw.com/l/7jPdrRbLpNn/9ORhrifaK24](https://user-images.githubusercontent.com/9257001/213723506-17a1f244-f25d-4f43-8831-6d2e0ce50ac7.png)
+
 ## Things you might wanna figure out before putting this in production
 
 - A more efficient websocket message encoding. JSON is probably slower than some alternatives here, especially the serialisation of body chunks to/from base64 strings.
