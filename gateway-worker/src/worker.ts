@@ -116,9 +116,16 @@ export class Lambda implements DurableObject {
 
     // TODO: Tweak timeout
     const state = await Promise.race([
-      waitFor(this.actor, (state) => state.value === "DownloadingBody", {
-        timeout: 30_000,
-      }),
+      waitFor(
+        this.actor,
+        (state) =>
+          state.matches(
+            "Active.WebsocketRecived.Connected.Response.DownloadingBody"
+          ),
+        {
+          timeout: 30_000,
+        }
+      ),
       waitFor(this.actor, (state) => state?.done === true, {
         timeout: 30_000,
       }),
