@@ -4,5 +4,9 @@
   "author": "Tom Sherman",
   "devDependencies": {
     "prettier": "^2.8.3"
+  },
+  "scripts": {
+    "deploy:aws": "pnpm run --filter application-lambda deploy",
+    "deploy:cloudflare": "pnpm run --filter gateway-worker deploy"
   }
 }

@@ -52,6 +52,28 @@ I'll write a full blog post with the details but for now here's a sequence diagr
 
 The state machine running in the durable object may also be useful to understand: [gateway-worker/src/lambdaMachine.ts](./gateway-worker/src/lambdaMachine.ts)
 
+## Running the example
+
+Pre-requisites:
+
+- An AWS account [bootstrapped with CDK](https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html)
+- A paid Cloudflare account. Free plan doesn't support durable objects unfortunately :(
+- Node + pnpm installed
+
+1. Clone the repo
+2. `pnpm i`
+3. `pnpm run deploy:cloudfare`
+4. Use the worker URL from the output of the previous command to create a `.env` file in the `application-lambda` directory eg.
+    ```
+    SOCKET_CONNECTION_URL=wss://lambda-gateway.me.workers.dev/socket
+    ```
+5. `pnpm run deploy:lambda`
+6. Put the lambda URL from the previous command into the LAMBDA_URL variable in `gateway-worker/wrangler.toml`
+7. `pnpm run deploy:cloudfare` again to deploy the worker with the new lambda URL
+8. Send a request to the worker URL eg. `curl -N https://lambda-gateway.me.workers.dev/api/`
+
+Watch the output for those chunks!
+
 ## Differences with other approaches
 
 https://github.com/jacob-ebey/cf-lambda-streaming is a technique that reverses the websocket handshake and has the lambda act as a websocket server (instead of a client as in this repo). This has some latency benefits but requires more infratructure on the AWS side. The only way to accept a websocket in AWS lambda is to put an API gateway in front of it, this is extra infra that you might not want to manage. With the approach in this repo you can instead drop a Cloudflare gateway infront of your existing infrastructure to enable streaming. This can also make the lambda simpler to deploy because you can use [Function URLs](https://docs.aws.amazon.com/lambda/latest/dg/lambda-urls.html) instead of an API gateway. Because there's no extra infrastructure on the cloud vendor side, this approach is also portable to other cloud providers.

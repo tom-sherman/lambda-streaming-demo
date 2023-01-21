@@ -5,7 +5,8 @@
     "application-lambda": "bin/application-lambda.js"
   },
   "scripts": {
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "deploy": "cdk deploy"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.109",

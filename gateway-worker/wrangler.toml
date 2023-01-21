@@ -12,4 +12,3 @@ new_classes = ["Lambda"]
 
 [vars]
 # LAMBDA_URL = "https://ID.lambda-url.REGION.on.aws/"
-LAMBDA_URL = "https://6jdzd4zykvbww2r3psaprjir440phdyy.lambda-url.eu-west-1.on.aws/"
