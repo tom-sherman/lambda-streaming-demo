@@ -38,6 +38,7 @@ export function streamHandler(
             "method must be a string"
           );
           invariant(typeof message.url === "string", "method must be a string");
+          invariant(Array.isArray(message.headers), "headers must be an array");
 
           resolve({
             headers: new Headers(message.headers),
@@ -80,7 +81,7 @@ export function streamHandler(
       JSON.stringify({
         type: "headers",
         status: response.status,
-        headers: Object.fromEntries(response.headers.entries()),
+        headers: [...response.headers.entries()],
         url: request.url,
       })
     );

@@ -1,7 +1,7 @@
 name = "cf-worker"
 main = "src/index.ts"
 compatibility_date = "2023-01-19"
-compatibility_flags = [ "streams_enable_constructors" ]
+# compatibility_flags = [ "streams_enable_constructors" ]
 [durable_objects]
 bindings = [
   { name = "lambdas", class_name = "Lambda" },

@@ -11,6 +11,7 @@
     "deploy": "wrangler publish"
   },
   "dependencies": {
-    "immurl": "^1.2.0"
+    "immurl": "^1.2.0",
+    "xstate": "^4.35.2"
   }
 }

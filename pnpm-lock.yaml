@@ -41,8 +41,10 @@ importers:
       immurl: ^1.2.0
       typescript: ^4.9.4
       wrangler: 2.8.0
+      xstate: ^4.35.2
     dependencies:
       immurl: 1.2.0
+      xstate: 4.35.2
     devDependencies:
       '@cloudflare/workers-types': 4.20221111.1
       typescript: 4.9.4
@@ -1614,6 +1616,10 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+
+  /xstate/4.35.2:
+    resolution: {integrity: sha512-5X7EyJv5OHHtGQwN7DsmCAbSnDs3Mxl1cXQ4PVaLwi+7p/RRapERnd1dFyHjYin+KQoLLfuXpl1dPBThgyIGNg==}
+    dev: false
 
   /xxhash-wasm/1.0.2:
     resolution: {integrity: sha512-ibF0Or+FivM9lNrg+HGJfVX8WJqgo+kCLDc4vx6xMeTce7Aj+DLttKbxxRR/gNLSAelRc1omAPlJ77N/Jem07A==}
