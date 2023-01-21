@@ -2,11 +2,9 @@
 
 import { createMachine, interpret, Interpreter } from "xstate";
 import { waitFor } from "xstate/lib/waitFor";
-import { lambdaMachine } from "./lambdaMachine";
-
-export interface Env {
-  lambdas: DurableObjectNamespace;
-}
+import { createLambdaMachine } from "./lambdaMachine";
+import { Env } from "./types";
+import { jsonResponse } from "./util";
 
 const routes = [
   {
@@ -43,7 +41,9 @@ function handleSocket(
     return new Response("expected a socket id", { status: 400 });
   }
 
-  const lambda = env.lambdas.get(env.lambdas.idFromName(socketId));
+  console.log("Handling socket connection", socketId);
+
+  const lambda = env.lambdas.get(env.lambdas.idFromString(socketId));
   return lambda.fetch(request);
 }
 
@@ -65,12 +65,22 @@ export default {
 };
 
 export class Lambda implements DurableObject {
-  id: DurableObjectId;
   actor: Interpreter<any, any, any, any>;
 
-  constructor({ id }: DurableObjectState) {
-    this.id = id;
-    this.actor = interpret(lambdaMachine).start();
+  constructor(private state: DurableObjectState, env: Env) {
+    this.actor = interpret(
+      createLambdaMachine(state.id.toString(), env)
+    ).start();
+
+    this.actor.onTransition((state, event) => {
+      console.log(
+        JSON.stringify({
+          stamp: new Date().toISOString(),
+          event,
+          state: state.value,
+        })
+      );
+    });
   }
 
   fetch(request: Request) {
@@ -98,24 +108,49 @@ export class Lambda implements DurableObject {
       request,
     });
 
+    console.log("Waiting for active", this.state.id.toString());
+    await this.state.blockConcurrencyWhile(() =>
+      waitFor(this.actor, (state) => state.matches("Active"))
+    );
+    console.log("actor active");
+
     // TODO: Tweak timeout
-    await waitFor(this.actor, (state) => state.value === "DownloadingBody"); // TODO: Correct state value here (should be fixed when types are correct)
+    const state = await Promise.race([
+      waitFor(this.actor, (state) => state.value === "DownloadingBody", {
+        timeout: 30_000,
+      }),
+      waitFor(this.actor, (state) => state?.done === true, {
+        timeout: 30_000,
+      }),
+    ]); // TODO: Correct state value here (should be fixed when types are correct)
 
-    const { response } = this.actor.state.context;
+    if (state.value === "Error") {
+      return jsonResponse(state, { status: 503 });
+    }
+    const { res } = state.context;
 
-    return response;
+    return res.response;
   }
 
   async handleSocket(
     request: Request<unknown>,
     match: URLPatternURLPatternResult
   ): Promise<Response> {
+    const state = this.actor.getSnapshot();
+    console.log(
+      "handling socket while in state",
+      state.value,
+      this.state.id.toString()
+    );
+    if (!state.matches("Active.Connecting")) {
+      return new Response("Not ready", { status: 503 });
+    }
     const upgradeHeader = request.headers.get("Upgrade");
     if (!upgradeHeader || upgradeHeader !== "websocket") {
       return new Response("Expected Upgrade: websocket", { status: 426 });
     }
     const { 0: client, 1: server } = new WebSocketPair();
-
+    server.accept();
     this.actor.send("receive websocket", {
       socket: server,
     });

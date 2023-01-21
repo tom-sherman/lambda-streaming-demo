@@ -15,11 +15,12 @@ function getBody() {
 
   return new ReadableStream({
     async pull(controller) {
-      await wait(1000);
       if (i === numberOfChunks) {
         controller.close();
       } else {
-        controller.enqueue(encoder.encode(`Chunk ${i}`));
+        controller.enqueue(encoder.encode(`Chunk ${i}\n`));
+        i++;
+        await wait(1000);
       }
     },
   });

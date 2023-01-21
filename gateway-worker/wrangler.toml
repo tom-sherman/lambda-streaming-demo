@@ -1,5 +1,5 @@
-name = "cf-worker"
-main = "src/index.ts"
+name = "lambda-gateway"
+main = "src/worker.ts"
 compatibility_date = "2023-01-19"
 # compatibility_flags = [ "streams_enable_constructors" ]
 [durable_objects]
@@ -9,3 +9,7 @@ bindings = [
 [[migrations]]
 tag = "v1" # Should be unique for each entry
 new_classes = ["Lambda"]
+
+[vars]
+# LAMBDA_URL = "https://ID.lambda-url.REGION.on.aws/"
+LAMBDA_URL = "https://6jdzd4zykvbww2r3psaprjir440phdyy.lambda-url.eu-west-1.on.aws/"

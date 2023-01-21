@@ -1,13 +1,15 @@
 import { assign, createMachine } from "xstate";
+import { Env } from "./types";
 import { invariant } from "./util";
 
 const decoder = new TextDecoder();
 const encoder = new TextEncoder();
 
-export const lambdaMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QBsCGBbARhVA6AkhMmAMQCWAdgMYD26lUABAE5gCOArnAC4DaADAF1EoAA41YZbmRoURIAB6IAtAEZ+AdgAsufgE5+ADkMA2Y3tVaArABoQATxXXDuAMwAmVRatXD79xqGWgC+wXZoWDi4AIJU0gBupBCyYLiU8TQA1qkR2HixCWAI6TRUqNKyAoJV8uKSFXJIioha-Ca4VlrmelYa-qq2Dogmfbiqhq6G-FaqJgbuehqh4Rh5MXFkiSRgzMw0zLiiaNwAZvvouLlRBZtFJWUNVTVNdVIyjaBKCKpeGm5WJncrisPVUGn4ATsjgQyncE1wGgsXT0gKCJi07mWICu+Q2iVwAGFZBQwBsKFASKwqGBbowAO5gTCwUrZPhCWoSN6yeRfZRaDSqDqIhb8Vz8LSuEyuDRQlRilzuMzi7QacEeVRYnHrQq4ADqjOZVFZACVSbcICRDazGDs9sxnmJOQ0eYhVO4AboJQLQYYfD9Zd8pWNgdo9P5euHNatrnjUvqmSywNxTVRzZbE9xGFRkBJIA6QK9nU0vm6tHpcCYzOCw4Y9NZOgGTIKtNYNICQfpLD4rFHIridfGrUmU+bCcTSdJyemjUms+O4vnC+8XTDOvw3Ij9MDXAN+YYA8pev9TMiQT5ESje2sbvjBxmR4kIGOKCS4pBcKbODxcABVI40VAIAYSl2C4WBM0wGgIHsG1dn2RcnWXYtXSBdw3FaKxFWBXxRS0AMxTQ9EjB8dwIX5DQfCvGMBwNe8zUfZ9X24d9PzA7hf3-QDgNYL9wMYSDoLndAjiTMAEPqJDPkQBYrDGUi5kwkwjB3PChgQaxXFwd13C0KtWkMNsNTCbFo37W49Vomdk3o98iRfCcWNA78-xzLipypGlEhYJy+KoAALDgKEycSuQ+ZoEDhFx0UMH4gisaZfBMAMdMFd0piUnwmzVEJjK1G840sk0bKfOymMc2BxAoWA41QN5yQAMX2AAJMBAJ2WAQOpWlWAq2RqsYPzWogdqQqLKSYQlHR634dQvGIxF8MlLT206StfHBTFctM7VzLvKyH1s+dmKfU1eqq1IABEaDpChXKA8kACEoPsECzv6gSYNoYTiGY0bJPCtRwQrOYzEWaVSPFRsgbMSZ9ECFsFKoszb0K4disYhyTrgSrqtwK6bruhgnugzrPLAby3vJ-zAuC9kXkQ7lkNXHRVB3AZpgMMMAlMZLfF0NsZr0IXXDFExKKxCgoLgeQcQ5CTGfGtQ3TQ-QjFMcwuwPIitOlNs+h0jx9CRggiDAOXQpXNQIU08EtFmJsYoxcYDxIhFdabAZhc8Y38vNsaAYMzSy35EF9K6JsDxbNC2ymTDTF6DwfdjDGySgP3-t5CjywlJtRT0IJLAog84VkhZLGMdVWz0JOaITfbivThWA-dXBg6zsPTFUA8vEFX148mvxegmGvdtR6zUwY0qJwYRuwszoF-lVKOdMrSwXb+YET1rM9eiFkwR5Ruuionw77LfCBZ8t1U-jb0OjHDru1OUdptC8HTWkrCiDMMA+CqPtGT4lSOo5Xi3BL5Mx0uuaKsVrAJVMK4AMAwbY4QlJ0Lo6grCuF-hZf+49RxT3Ph+Hy7EXIAXumnem8s56IFcC2XQixFRulFDpQY0JJTlkWBYWhQQ9AeAsEsLafYdqHyHHgyewCsagKIaAok31RLgPGlKQUYtwQaA8GLOESU1L8h0Jw6YOjsrYL2sffBEiiGUwUQDPo2c6zt3vp3RBQNehKQsJ4HcmDKxGLHgdIBZ9jrmJxjVOqUBGrMBam1Zg8BKEWyZs-GKrdbF3yCA4tS7DdBzHzhMfk4xNBeNwT4lO-jTqBLxtdW6ZCibPUsbySwuiJRum0OokEbZ8JzHSULCu2SpgCJWEIgAonBZg1SUKVjGCiBKKJHasJUKzFwiIWzWKBPnTBxtZEiWYsM74RhW7+AyoHaUvCobrlmKKEWXRcJqNCKEIAA */
-  createMachine(
+export function createLambdaMachine(socketId: string, env: Env) {
+  /** @xstate-layout N4IgpgJg5mDOIC5QBsCGBbARhVA6AkhMmAMQCWAdgMYD26lUABAE5gCOArnAC4DaADAF1EoAA41YZbmRoURIAB6IAtAEZ+AdgAsufgE5+ADkMA2Y3tVaArABoQATxXXDuAMwAmVRatXD79xqGWgC+wXZoWDi4AIJU0gBupBCyYLiU8TQA1qkR2HixCWAI6TRUqNKyAoJV8uKSFXJIiohaqla4eq5WrqqG+q5aGpZado4IfjoBvkN9Vr0+oeEYeTFxZIkkYMzMNMy4omjcAGa76Li5UQXrRSVlDVU1TXVSMo2gSgiqXhpuVibuXT0cw0-ACoxU7kMrlwGgsWkMen+QRMWncixAF3ya0SuAAwrIKGA1hQoCRWFQwNdGAB3MCYWClbJ8IS1CQvWTyD7KQaqXBWWHuAyufhaVwmVwacEIZTClzuMwi7QaEEeVTozGrQq4ADqdIZVCZACUidcICR9UzGFsdsxHmI2Q1OYhVO4-rpRUMgfM5qopapxbhVF1tHp-Pyw+rlpdsaldfTGWBuMaqKbzQnuIwqMgJJA7SBno6mh8XVo9LgTGYQaGEdYrCMHIgTLytNYNP8rAY4T4rJHIlitXGLYnk6a8QSidISWmDYnM+O4nmC68ndLuiZA6WJWZBv5+LYG9KzB15d0fAM655DL2VlccYP0yPEhAxxRCXFILhjZweLgAKoHGhUAgBgyXYLhYAzTAaAgew53QA5EzARcHWXItEEFdoXX4EwgXlIwenrMZrGhV13C0SstCMNs1TCDEo37a4dT1B8TSfF8324D8v3A7g-wAoCQPJSlEhYMCeEzAALDgKEyZD6lQ950OMct4S+IIrD3XwTClMjeVdPoTE0psVRCWiNVvWNmJnJNWI-fFXwnLixIgvjswEqdWG-CDGCgmCrW2XY5PZN5mk+AF3DcSirHlLpfH4AYpWFCKUSMHx3FBQYNAWMz6M1Rj72sx87PnTjn2NWBxAoWBY1QF4SQAMV2AAJMAgK2WBQIpKlWAq2RqsYCTWogdqgsLRTpVFHRa34dQvFS2FErFXB5VdOsK2mUFr2jAcrKNWzn3sjinN6qrUgAERoakKDc4CSQAIWg+xQJO-rfNg2h4OITjRoU0K1BBcscJwjDIVdbSDz8CLlQ7dT-G0botoYu9duHfb2Mcsq4Eq6rcAuq6boYB6YM64SwFEl6yaoKSZJ+jk0NXHQgy+DSO30OHTB03xdDbGa9D51xhRMbLaIoaC4HkTFWXkunxrUF0Iv0IxTHMSx9zGZQUuWiU21hboAUGRGCCIMApeClc1FBaEQVaCteksS8pWUNKYW1ps2n5zxDYs02xr+wwNGhUtBg7SiglMX0D25VEYQVaLDCDAZ-a9mN0eJKAfd+rksrLUUm3ivQgksLLHchdpBUsYxVVbPRk52+NCv2jOZb911cCD7PQ-hJsS-ituT1DkFDF8K8cr7PLkfrvaUzYw6JwYJuQqzgFy1hHCvnFYwgkdo9QyF2Lz1RXpa-ylGbOn4qHPfCAF-N5UfnbkOjC7iP1fXbR0vS+O20hCw0VHm8U4FSnqOWeV9PzOW4DfemZF+AqXjr0awmlTCuD9N0GEcVLD6FZgEY+E8hxnxASVJyXleL-gJiSKB40Bg6H0BoeUWEPDWESjhDosIgzwk3OXDQuDLKT1RufA6RDMYkPASQ-En1EKUNCuKXkQsQQBxPJCcGRFtCsIMHWJU8VTJLDHhZJifCCEzyEeAimUil45z0MHSxT9w5+gBvyQyccKyIgMNouiujAGnyKoIy+pUTHYxqnVKAjVmAtTasweATwULNy5GYZsliO42O7geMUZZsJ80rjyPo3D-7bRPgY7xqc-HlQCbjS611AK3SgETMY9ppaLxUMMDoooXTaA8ELPQbZmFpJwgXKEWTNCGwAKIBWYGY508p1xeEcR2OJTDI5BhcLCFsdDQyuALgjXJeBxEIU4uMz4qgfiBDMJ4No2hBjKMQH4Xk-BQRniCJ0eUoRQhAA */
+  return createMachine(
     {
+      predictableActionArguments: true,
       tsTypes: {} as import("./lambdaMachine.typegen").Typegen0,
       schema: {
         context: {} as {
@@ -35,6 +37,12 @@ export const lambdaMachine =
           | { type: "socket connect" }
           | { type: "socket error" }
           | { type: "socket closed" },
+      },
+
+      context: {
+        socket: null,
+        request: null,
+        res: null,
       },
 
       id: "lambda",
@@ -190,7 +198,7 @@ export const lambdaMachine =
         },
 
         createResponse: assign((_ctx, event) => {
-          const transformStream = new TransformStream<Uint8Array>();
+          const transformStream = new IdentityTransformStream();
           const response = new Response(transformStream.readable, {
             headers: new Headers(event.headers),
             status: event.status,
@@ -211,7 +219,10 @@ export const lambdaMachine =
 
         enqueueResponseChunk: ({ res }, event) => {
           invariant(!!res, "res should be defined");
-          res.bodyStream.getWriter().write(event.chunk);
+          const writer = res.bodyStream.getWriter();
+
+          writer.write(event.chunk);
+          writer.releaseLock();
         },
 
         sendRequestChunk: ({ socket }, event) => {
@@ -243,10 +254,10 @@ export const lambdaMachine =
 
       services: {
         establishHTTPConnection: async () => {
-          const response = await fetch("LAMBDA_URL", {
+          const response = await fetch(env.LAMBDA_URL, {
             method: "POST",
             body: JSON.stringify({
-              id: "123",
+              socketId,
             }),
           });
 
@@ -297,7 +308,6 @@ export const lambdaMachine =
         socketSubscription:
           (ctx, { socket }) =>
           (sendBack, onReceive) => {
-            socket.accept();
             const controller = new AbortController();
 
             socket.addEventListener(
@@ -316,17 +326,22 @@ export const lambdaMachine =
               }
             );
 
-            socket.addEventListener(
-              "open",
-              () => sendBack({ type: "socket connect" }),
-              {
-                signal: controller.signal,
-              }
-            );
+            if (socket.readyState === WebSocket.READY_STATE_OPEN) {
+              sendBack({ type: "socket connect" });
+            } else {
+              socket.addEventListener(
+                "open",
+                () => sendBack({ type: "socket connect" }),
+                {
+                  signal: controller.signal,
+                }
+              );
+            }
 
             socket.addEventListener(
               "message",
               (msg) => {
+                console.log("msg", msg.data);
                 invariant(
                   typeof msg.data === "string",
                   "msg.data should be a string"
@@ -367,3 +382,4 @@ export const lambdaMachine =
       },
     }
   );
+}
