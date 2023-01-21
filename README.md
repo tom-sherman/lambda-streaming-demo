@@ -2,7 +2,7 @@
 
 ## Differences with other approaches
 
-https://github.com/jacob-ebey/cf-lambda-streaming is a technique that reverses the websocket handshake and has the lambda act as a websocket server (instead of a client as in this repo). This has some latency benefits but requires more infratructure on the AWS side. The only way to accept a websocket in AWS lambda is to put an API gateway in front of it, this is extra infra that you might not want to manage. With the approach in this repo you can instead drop a Cloudflare gateway infront of your existing infrastructure to enable streaming. This can also make the lambda simpler to deploy because you can use [Function URLs](https://docs.aws.amazon.com/lambda/latest/dg/lambda-urls.html) instead of an API gateway (for when you have just one function).
+https://github.com/jacob-ebey/cf-lambda-streaming is a technique that reverses the websocket handshake and has the lambda act as a websocket server (instead of a client as in this repo). This has some latency benefits but requires more infratructure on the AWS side. The only way to accept a websocket in AWS lambda is to put an API gateway in front of it, this is extra infra that you might not want to manage. With the approach in this repo you can instead drop a Cloudflare gateway infront of your existing infrastructure to enable streaming. This can also make the lambda simpler to deploy because you can use [Function URLs](https://docs.aws.amazon.com/lambda/latest/dg/lambda-urls.html) instead of an API gateway. Because there's no extra infrastructure on the cloud vendor side, this approach is also portable to other cloud providers.
 
 ## Things you might wanna figure out before putting this in production
 
