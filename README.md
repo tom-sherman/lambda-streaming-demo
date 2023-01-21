@@ -9,6 +9,7 @@ https://github.com/jacob-ebey/cf-lambda-streaming is a technique that reverses t
 - Retrying and reconnecting. Websockets can close for a variety of reasons, the lambda function should be able to handle this and reconnect then resume the response stream.
 - Implementing a similar `streamHandler` but for Node.js streams (Writable/Readable). This would unlock using many traditional Node.js libraries for streaming data.
 - Removing xstate from the durable object in favour of a hand rolled state machine if you don't like the extra dependency.
+- Socket recycling. The lambda function will create a new socket for each request. An alternative is to reuse an existing socket to improve latency, potentially using [Durable Object Groups](https://github.com/cloudflare/dog) for coordination.
 - Measure the perf (memory and CPU) of the durable object and worker. I haven't done this yet, but I'm sure there are some optimisations to be made. You may want to consider implementing the worker in Rust for better performance. Removing the xstate dependency could also help here.
 - A more efficient websocket message encoding. JSON is probably slower than some alternatives here, especially the serialisation of body chunks to/from base64 strings.
 
