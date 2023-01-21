@@ -1,4 +1,56 @@
+# Add HTTP Streaming to your Lambda Functions
+
+This repo contains a Cloudflare Worker and Durable Object that enables streaming HTTP responses from AWS Lambda functions. It's a proof of concept and not production ready, but it's a good starting point for anyone wanting to add streaming to their lambdas.
+
+All it takes is a few lines of code in your lambda to enable streaming:
+
+```ts
+import { streamHandler } from "./lib";
+
+export const handler = streamHandler((_request) => {
+  const body = getBody();
+  return new Response(body, { status: 200 });
+});
+
+/**
+ * Returns a ReadableStream that will emit 5 chunks of text, one every second.
+ */
+function getBody() {
+  const encoder = new TextEncoder();
+  const numberOfChunks = 5;
+  let i = 0;
+
+  return new ReadableStream({
+    async pull(controller) {
+      if (i === numberOfChunks) {
+        controller.close();
+      } else {
+        controller.enqueue(encoder.encode(`Chunk ${i}\n`));
+        i++;
+        await wait(1000);
+      }
+    },
+  });
+}
+
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+```
+
+https://user-images.githubusercontent.com/9257001/213889485-c5d8dbcd-361d-4a22-9572-d31759a36e1d.mov
+
+## Performance
+
+In my very limited testing this seemed to add almost zero extra latency to the response. Of course this will depend on your locality to Cloudflare and AWS.
+
+More testing is needed here and it'snot my area of expertise, please reach out if you can help instrumenting/measuring this!
+
+## How does it work?
+
+I'll write a full blog post with the details but for now here's a sequence diagram:
+
 ![Screenshot of an excalidraw canvas https://app.excalidraw.com/l/7jPdrRbLpNn/9ORhrifaK24](https://user-images.githubusercontent.com/9257001/213723506-17a1f244-f25d-4f43-8831-6d2e0ce50ac7.png)
+
+The state machine running in the durable object may also be useful to understand: [gateway-worker/src/lambdaMachine.ts](./gateway-worker/src/lambdaMachine.ts)
 
 ## Differences with other approaches
 
