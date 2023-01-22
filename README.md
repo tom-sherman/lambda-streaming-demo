@@ -1,6 +1,6 @@
 # Add HTTP Streaming to your Lambda Functions
 
-This repo contains a Cloudflare Worker and Durable Object that enables streaming HTTP responses from AWS Lambda functions. It's a proof of concept and not production ready, but it's a good starting point for anyone wanting to add streaming to their lambdas.
+This repo contains a Cloudflare Worker and Durable Object acting as a gateway to enablee streaming HTTP responses from AWS Lambda functions. It's a proof of concept and not production ready, but it's a good starting point for anyone wanting to add streaming to their lambdas.
 
 All it takes is a few lines of code in your lambda to enable streaming:
 
