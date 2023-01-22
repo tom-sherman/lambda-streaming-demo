@@ -1,10 +1,8 @@
-// import { readableStreamFromIterable, wait } from "./util";
-
-import { createMachine, interpret, Interpreter } from "xstate";
+import { interpret, InterpreterFrom } from "xstate";
 import { waitFor } from "xstate/lib/waitFor";
 import { createLambdaMachine } from "./lambdaMachine";
 import { Env } from "./types";
-import { jsonResponse } from "./util";
+import { invariant, jsonResponse } from "./util";
 
 const routes = [
   {
@@ -65,7 +63,7 @@ export default {
 };
 
 export class Lambda implements DurableObject {
-  actor: Interpreter<any, any, any, any>;
+  actor: InterpreterFrom<ReturnType<typeof createLambdaMachine>>;
 
   constructor(private state: DurableObjectState, env: Env) {
     this.actor = interpret(
@@ -126,15 +124,18 @@ export class Lambda implements DurableObject {
           timeout: 30_000,
         }
       ),
-      waitFor(this.actor, (state) => state?.done === true, {
+      waitFor(this.actor, (state) => state.done === true, {
         timeout: 30_000,
       }),
-    ]); // TODO: Correct state value here (should be fixed when types are correct)
+    ]);
 
-    if (state.value === "Error") {
+    if (state.matches("Error")) {
       return jsonResponse(state, { status: 503 });
     }
+
     const { res } = state.context;
+
+    invariant(!!res, "Expected a response in context");
 
     return res.response;
   }
