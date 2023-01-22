@@ -88,8 +88,8 @@ https://github.com/jacob-ebey/cf-lambda-streaming is a technique that reverses t
 - Measure the perf (memory and CPU) of the durable object and worker. I haven't done this yet, but I'm sure there are some optimisations to be made. You may want to consider implementing the worker in Rust for better performance. Removing the xstate dependency could also help here.
 - A more efficient websocket message encoding. JSON is probably slower than some alternatives here, especially the serialisation of body chunks to/from base64 strings.
 
-## Caveats
+## Timeout lengths
 
-Aside from the above, there are a few caveats to be aware of:
+Lambda functions have a maximum execution time of 15 minutes. This means that if you're streaming a large response, you'll need to make sure that the function doesn't time out before the response is complete. This also prevents you from creating HTTP connections that last longer than 15 minutes, which you might want to do with Server Sent Events for example.
 
-- Lambda timeouts. Lambda functions have a maximum execution time of 15 minutes. This means that if you're streaming a large response, you'll need to make sure that the function doesn't time out before the response is complete. This also prevents you from creating HTTP connections that last longer than 15 minutes, which you might want to do with Server Sent Events for example.
+Notably however, Lambda event size is not limited to the traditional 6MB imposed by AWS. You can send requests of arbitrary size, as long as the client can it and the lambda can process it within 15minutes. In other words, this architecture limits the time a HTTP connection is open for to 15 minutes, but the amount of data sent in that time is unbounded.
