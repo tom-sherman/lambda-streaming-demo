@@ -80,6 +80,7 @@ https://github.com/jacob-ebey/cf-lambda-streaming is a technique that reverses t
 
 ## Things you might wanna figure out before putting this in production
 
+- Chunking of request and response chunks. Cloudflare websockets have a maximum message size of 1MiB but HTTP has an unbounded chunk size (AFAIA). The worker and lambda should chunk the request and response bodies to ensure that they don't exceed the maximum message size.
 - Retrying and reconnecting. Websockets can close for a variety of reasons, the lambda function should be able to handle this and reconnect then resume the response stream.
 - Implementing a similar `streamHandler` but for Node.js streams (Writable/Readable). This would unlock using many traditional Node.js libraries for streaming data.
 - Removing xstate from the durable object in favour of a hand rolled state machine if you don't like the extra dependency.
